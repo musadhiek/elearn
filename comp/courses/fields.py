@@ -3,9 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class OrderField(models.PositiveIntegerField):
-    def __int__(self, for_fields=None, *args, **kwargs):
+    def __init__(self, for_fields = None, *args, **kwargs):
         self.for_fields = for_fields
-        super().__int__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def pre_save(self,model_instance,add):
         if getattr(model_instance, self.attname) is None:
@@ -18,7 +18,7 @@ class OrderField(models.PositiveIntegerField):
                     qs = qs.filter(**query)
                 #get the order of the last item
                 last_item = qs.latest(self.attname)    
-                value = last_item + 1
+                value = last_item.order + 1
             except ObjectDoesNotExist:
                 value = 0
             setattr(model_instance, self.attname, value)
